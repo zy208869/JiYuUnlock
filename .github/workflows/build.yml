@@ -1,0 +1,31 @@
+name: 自动编译 Windows 版本
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest   # 指定使用 Windows 环境
+
+    steps:
+    - name: 1. 拉取代码
+      uses: actions/checkout@v4
+
+    - name: 2. 安装 xmake 编译工具
+      uses: xmake-io/github-action-setup-xmake@v1
+      with:
+        xmake-version: latest
+
+    - name: 3. 开始编译项目
+      run: |
+        xmake f -y
+        xmake -y
+
+    - name: 4. 上传编译好的 exe 文件
+      uses: actions/upload-artifact@v4
+      with:
+        name: JiYuUnlock-Windows
+        path: build/windows/x64/release/JiYuUnlock.exe
